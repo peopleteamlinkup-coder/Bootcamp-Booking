@@ -1,228 +1,656 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkUp Visitor Clearance</title>
 
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-.wrap { padding: 1.5rem 0; max-width: 580px; margin: 0 auto; }
-.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.5rem; margin-bottom: 1rem; }
-.form-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
-.form-icon { width: 38px; height: 38px; border-radius: 50%; background: #E1F5EE; display: flex; align-items: center; justify-content: center; color: #0F6E56; font-size: 19px; flex-shrink: 0; }
-.form-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
-.form-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
-label { display: block; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; margin-top: 14px; letter-spacing: 0.01em; }
-input { width: 100%; }
-.btn-submit { width: 100%; margin-top: 1.25rem; padding: 11px; font-size: 14px; font-weight: 500; background: #1D9E75; border: none; border-radius: var(--border-radius-md); cursor: pointer; color: #fff; letter-spacing: 0.01em; transition: background 0.15s; }
-.btn-submit:hover { background: #0F6E56; }
-.btn-back { width: 100%; margin-top: 10px; padding: 9px; font-size: 13px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); cursor: pointer; color: var(--color-text-secondary); transition: background 0.15s; }
-.btn-back:hover { background: var(--color-background-secondary); }
-.err { font-size: 12px; color: #A32D2D; margin-top: 8px; min-height: 16px; }
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-.pass-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
-.pass-top { background: #0F6E56; padding: 1.25rem 1.5rem; position: relative; overflow: hidden; }
-.pass-top-shimmer { position: absolute; top: 0; left: -120%; width: 80px; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent); animation: sweep 3s infinite; pointer-events: none; }
-@keyframes sweep { 0%{left:-120%} 100%{left:160%} }
-.pass-top-label { font-size: 10px; color: #9FE1CB; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
-.pass-top-name { font-size: 20px; font-weight: 500; color: #fff; }
-.pass-top-id { font-size: 11px; color: #9FE1CB; margin-top: 3px; font-family: var(--font-mono); }
-.pass-body { padding: 1.25rem 1.5rem; }
-.pass-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; margin-bottom: 1.25rem; }
-.pf-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 2px; }
-.pf-val { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
-.divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 1rem 0; }
-.qr-section { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-.qr-top-row { display: flex; align-items: center; gap: 6px; }
-.live-dot { width: 7px; height: 7px; border-radius: 50%; background: #1D9E75; animation: pulse 2s infinite; flex-shrink: 0; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-.qr-live-label { font-size: 11px; color: #0F6E56; font-weight: 500; }
-canvas#qrcanvas { border-radius: 6px; border: 0.5px solid var(--color-border-tertiary); }
-.qr-timer { font-size: 10px; color: var(--color-text-secondary); }
+    :root {
+      --teal: #18C6B6;
+      --teal-dark: #0FAE9A;
+      --navy: #1D2E5B;
+      --navy-dark: #122044;
+      --bg: #F5FBFA;
+      --text: #18233F;
+      --muted: #657083;
+      --border: #DDE8EA;
+      --danger: #B3261E;
+    }
 
-.sheets-hint { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; border: 0.5px solid var(--color-border-tertiary); }
-.sheets-hint p { font-size: 12px; color: var(--color-text-secondary); }
-.sheets-hint input { font-size: 12px; margin-top: 6px; }
-</style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #F5FBFA 0%, #FFFFFF 55%, #EAF9F7 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
 
-<div class="wrap">
-  <h2 class="sr-only">Visitor clearance booking system</h2>
+    .hero {
+      background: linear-gradient(135deg, #FFFFFF 0%, #EAF9F7 45%, var(--teal) 70%, var(--navy) 100%);
+      padding: 28px 20px 34px;
+      border-bottom: 1px solid var(--border);
+    }
 
-  <div id="form-view">
-    <div class="card">
-      <div class="form-header">
-        <div class="form-icon"><i class="ti ti-clipboard-check" aria-hidden="true"></i></div>
-        <div>
-          <p class="form-title">Visitor clearance form</p>
-          <p class="form-sub">All fields are required</p>
-        </div>
+    .hero-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand-logo {
+      width: 170px;
+      max-width: 45%;
+      object-fit: contain;
+    }
+
+    .hero-text {
+      flex: 1;
+      text-align: right;
+      color: var(--navy);
+    }
+
+    .hero-text h1 {
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .hero-text p {
+      font-size: 14px;
+      color: #34415F;
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 28px 18px 36px;
+    }
+
+    .card, .pass-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 14px 40px rgba(29, 46, 91, 0.08);
+      overflow: hidden;
+    }
+
+    .card {
+      padding: 26px;
+    }
+
+    .form-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background: #DDF8F5;
+      color: var(--teal-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .form-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .form-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    label {
+      display: block;
+      margin-top: 16px;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    label span {
+      color: var(--danger);
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #CBD8DC;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      transition: 0.15s;
+    }
+
+    input:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 4px rgba(24, 198, 182, 0.14);
+    }
+
+    .err {
+      color: var(--danger);
+      font-size: 13px;
+      min-height: 18px;
+      margin-top: 10px;
+    }
+
+    .btn-submit, .btn-back {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.15s;
+    }
+
+    .btn-submit {
+      margin-top: 18px;
+      padding: 14px;
+      font-size: 16px;
+      background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+      color: #FFFFFF;
+      box-shadow: 0 10px 20px rgba(15, 174, 154, 0.22);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-1px);
+      background: linear-gradient(135deg, var(--teal-dark), #088B7C);
+    }
+
+    .secure-note {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .pass-card {
+      margin-top: 20px;
+    }
+
+    .pass-top {
+      background: linear-gradient(135deg, var(--navy), #086B73, var(--teal-dark));
+      color: #FFFFFF;
+      padding: 22px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .pass-logo {
+      width: 140px;
+      max-width: 38%;
+      filter: brightness(0) invert(1);
+    }
+
+    .pass-title {
+      text-align: right;
+    }
+
+    .pass-title p:first-child {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
+
+    .pass-title p:last-child {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    .pass-body {
+      padding: 24px;
+    }
+
+    .pass-name {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .pass-id {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      border: 1px solid var(--teal);
+      border-radius: 8px;
+      padding: 6px 10px;
+      margin-bottom: 20px;
+    }
+
+    .pass-layout {
+      display: grid;
+      grid-template-columns: 1fr 190px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .pass-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field-box {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .pf-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+
+    .pf-val {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .qr-section {
+      border: 1px solid var(--teal);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+      background: #FFFFFF;
+    }
+
+    canvas#qrcanvas {
+      width: 164px;
+      height: 164px;
+    }
+
+    .qr-live-label {
+      color: var(--teal-dark);
+      font-size: 12px;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    .qr-timer {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .pass-footer {
+      background: #EAF9F7;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .btn-back {
+      margin-top: 16px;
+      padding: 12px;
+      font-size: 14px;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      color: var(--navy);
+    }
+
+    .btn-back:hover {
+      background: #F1F7F7;
+    }
+
+    .footer {
+      background: var(--navy);
+      color: #FFFFFF;
+      text-align: center;
+      font-size: 12px;
+      padding: 16px;
+      margin-top: 28px;
+    }
+
+    @media (max-width: 700px) {
+      .hero-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-text {
+        text-align: center;
+      }
+
+      .brand-logo {
+        max-width: 75%;
+      }
+
+      .pass-top {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .pass-title {
+        text-align: center;
+      }
+
+      .pass-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .pass-fields {
+        grid-template-columns: 1fr;
+      }
+
+      .qr-section {
+        max-width: 210px;
+        margin: 0 auto;
+      }
+
+      .pass-footer {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hero">
+    <div class="hero-inner">
+      <img src="linkup-logo.png" alt="LinkUp Logo" class="brand-logo">
+      <div class="hero-text">
+        <h1>Visitor clearance booking system</h1>
+        <p>Please fill in all fields to generate a clearance pass.</p>
       </div>
-
-      <label>Visitor name</label>
-      <input type="text" id="f-name" placeholder="Full name of visitor" />
-
-      <label>Purpose of visit</label>
-      <input type="text" id="f-purpose" placeholder="e.g. Personal visit, delivery, meeting" />
-
-      <label>Resident being visited</label>
-      <input type="text" id="f-resident" placeholder="Full name of resident" />
-
-      <label>Date of visit</label>
-      <input type="date" id="f-date" />
-
-      <p class="err" id="err-msg"></p>
-      <button class="btn-submit" onclick="generatePass()">
-        <i class="ti ti-id-badge-2" aria-hidden="true" style="font-size:15px;vertical-align:-2px;margin-right:6px"></i>Generate clearance pass
-      </button>
     </div>
   </div>
 
-  <div id="pass-view" style="display:none">
-    <div class="pass-card">
-      <div class="pass-top">
-        <div class="pass-top-shimmer"></div>
-        <p class="pass-top-label">Visitor clearance pass</p>
-        <p class="pass-top-name" id="p-name">—</p>
-        <p class="pass-top-id" id="p-id">—</p>
-      </div>
-      <div class="pass-body">
-        <div class="pass-fields">
+  <div class="wrap">
+    <div id="form-view">
+      <div class="card">
+        <div class="form-header">
+          <div class="form-icon">✓</div>
           <div>
-            <p class="pf-label">Purpose of visit</p>
-            <p class="pf-val" id="p-purpose">—</p>
-          </div>
-          <div>
-            <p class="pf-label">Visiting resident</p>
-            <p class="pf-val" id="p-resident">—</p>
-          </div>
-          <div>
-            <p class="pf-label">Date of visit</p>
-            <p class="pf-val" id="p-date">—</p>
-          </div>
-          <div>
-            <p class="pf-label">Issued at</p>
-            <p class="pf-val" id="p-time">—</p>
+            <p class="form-title">Visitor clearance form</p>
+            <p class="form-sub">All fields are required</p>
           </div>
         </div>
 
-        <hr class="divider">
+        <label>Visitor name <span>*</span></label>
+        <input type="text" id="f-name" placeholder="Full name of visitor">
 
-        <div class="qr-section">
-          <div class="qr-top-row">
-            <span class="live-dot"></span>
-            <span class="qr-live-label">Live verification QR</span>
-          </div>
-          <canvas id="qrcanvas" width="164" height="164"></canvas>
-          <p class="qr-timer" id="qr-timer">Refreshes in 30s</p>
-        </div>
+        <label>Site <span>*</span></label>
+        <input type="text" id="f-site" placeholder="e.g. Site A, Main Office, BGC">
+
+        <label>Purpose of visit <span>*</span></label>
+        <input type="text" id="f-purpose" placeholder="e.g. Personal visit, delivery, meeting">
+
+        <label>Resident being visited <span>*</span></label>
+        <input type="text" id="f-resident" placeholder="Full name of resident">
+
+        <label>Date of visit <span>*</span></label>
+        <input type="date" id="f-date">
+
+        <p class="err" id="err-msg"></p>
+
+        <button class="btn-submit" onclick="generatePass()">Generate clearance pass</button>
+
+        <p class="secure-note">Your information is secure and will only be used for visitor clearance purposes.</p>
       </div>
     </div>
 
-    <button class="btn-back" onclick="resetForm()">
-      <i class="ti ti-arrow-left" aria-hidden="true" style="font-size:14px;vertical-align:-2px;margin-right:5px"></i>New booking
-    </button>
+    <div id="pass-view" style="display:none">
+      <div class="pass-card">
+        <div class="pass-top">
+          <img src="linkup-logo.png" alt="LinkUp Logo" class="pass-logo">
+          <div class="pass-title">
+            <p>VISITOR CLEARANCE PASS</p>
+            <p>Please present this pass at the guardhouse</p>
+          </div>
+        </div>
+
+        <div class="pass-body">
+          <p class="pass-name" id="p-name">—</p>
+          <p class="pass-id" id="p-id">—</p>
+
+          <div class="pass-layout">
+            <div class="pass-fields">
+              <div class="field-box">
+                <p class="pf-label">Site</p>
+                <p class="pf-val" id="p-site">—</p>
+              </div>
+
+              <div class="field-box">
+                <p class="pf-label">Visiting resident</p>
+                <p class="pf-val" id="p-resident">—</p>
+              </div>
+
+              <div class="field-box">
+                <p class="pf-label">Purpose of visit</p>
+                <p class="pf-val" id="p-purpose">—</p>
+              </div>
+
+              <div class="field-box">
+                <p class="pf-label">Date of visit</p>
+                <p class="pf-val" id="p-date">—</p>
+              </div>
+
+              <div class="field-box">
+                <p class="pf-label">Issued at</p>
+                <p class="pf-val" id="p-time">—</p>
+              </div>
+
+              <div class="field-box">
+                <p class="pf-label">Valid for</p>
+                <p class="pf-val">One day only</p>
+              </div>
+            </div>
+
+            <div class="qr-section">
+              <canvas id="qrcanvas" width="164" height="164"></canvas>
+              <p class="qr-live-label">● LIVE PASS</p>
+              <p class="qr-timer" id="qr-timer">Refreshes in 30s</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pass-footer">
+          <p>This pass is system generated and may be subject to verification.</p>
+          <p>Powered by <strong>LinkUp</strong></p>
+        </div>
+      </div>
+
+      <button class="btn-back" onclick="resetForm()">Create another pass</button>
+    </div>
   </div>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
-let passData = null;
-let qrInterval = null;
-let secsLeft = 30;
+  <div class="footer">
+    Secure • Reliable • Professional &nbsp; | &nbsp; © 2026 LinkUp. All rights reserved.
+  </div>
 
-function uid() {
-  return 'VIS-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
-}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-function fmtDate(d) {
-  if (!d) return '—';
-  const [y,m,day] = d.split('-');
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return parseInt(day) + ' ' + months[parseInt(m)-1] + ' ' + y;
-}
+  <script>
+    let passData = null;
+    let qrInterval = null;
+    let secsLeft = 30;
 
-function token() {
-  const slot = Math.floor(Date.now() / 30000);
-  return btoa(slot + ':' + (passData ? passData.id : '')).replace(/=/g,'');
-}
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2OMriGa7Eklt5FyQkWCeK8PpxiNAgFVp2IwJf_UBVZBjQYffJ9Fiv8CO64VUSeuBR/exec';
 
-function drawQR() {
-  const canvas = document.getElementById('qrcanvas');
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, 164, 164);
-  const payload = JSON.stringify({ id: passData.id, name: passData.name, resident: passData.resident, date: passData.date, token: token(), ts: Date.now() });
-  const el = document.createElement('div');
-  try {
-    new QRCode(el, { text: payload, width: 160, height: 160, colorDark: '#085041', colorLight: '#FFFFFF', correctLevel: QRCode.CorrectLevel.M });
-    setTimeout(() => {
-      const img = el.querySelector('img') || el.querySelector('canvas');
-      if (!img) return;
-      if (img.tagName === 'IMG') {
-        const i = new Image(); i.onload = () => ctx.drawImage(i, 2, 2, 160, 160); i.src = img.src;
-      } else { ctx.drawImage(img, 2, 2, 160, 160); }
-    }, 120);
-  } catch(e) {}
-}
+    function uid() {
+      return 'VIS-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
+    }
 
-function startQR() {
-  if (qrInterval) clearInterval(qrInterval);
-  secsLeft = 30 - (Math.floor(Date.now() / 1000) % 30);
-  drawQR();
-  document.getElementById('qr-timer').textContent = 'Refreshes in ' + secsLeft + 's';
-  qrInterval = setInterval(() => {
-    secsLeft--;
-    if (secsLeft <= 0) { secsLeft = 30; drawQR(); }
-    document.getElementById('qr-timer').textContent = 'Refreshes in ' + secsLeft + 's';
-  }, 1000);
-}
+    function fmtDate(d) {
+      if (!d) return '—';
+      const [y,m,day] = d.split('-');
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return parseInt(day) + ' ' + months[parseInt(m)-1] + ' ' + y;
+    }
 
-function generatePass() {
-  const name = document.getElementById('f-name').value.trim();
-  const purpose = document.getElementById('f-purpose').value.trim();
-  const resident = document.getElementById('f-resident').value.trim();
-  const date = document.getElementById('f-date').value;
-  const err = document.getElementById('err-msg');
+    function token() {
+      const slot = Math.floor(Date.now() / 30000);
+      return btoa(slot + ':' + (passData ? passData.id : '')).replace(/=/g,'');
+    }
 
-  if (!name || !purpose || !resident || !date) {
-    err.textContent = 'Please fill in all fields before generating a pass.'; return;
-  }
-  err.textContent = '';
+    function drawQR() {
+      const canvas = document.getElementById('qrcanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, 164, 164);
 
-  passData = {
-    id: uid(), name, purpose, resident, date,
-    time: new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' })
-  };
+      const payload = JSON.stringify({
+        id: passData.id,
+        site: passData.site,
+        name: passData.name,
+        purpose: passData.purpose,
+        resident: passData.resident,
+        date: passData.date,
+        token: token(),
+        ts: Date.now()
+      });
 
-  document.getElementById('p-name').textContent = name;
-  document.getElementById('p-id').textContent = passData.id;
-  document.getElementById('p-purpose').textContent = purpose;
-  document.getElementById('p-resident').textContent = resident;
-  document.getElementById('p-date').textContent = fmtDate(date);
-  document.getElementById('p-time').textContent = passData.time;
+      const el = document.createElement('div');
 
-  document.getElementById('form-view').style.display = 'none';
-  document.getElementById('pass-view').style.display = 'block';
-  setTimeout(startQR, 200);
+      try {
+        new QRCode(el, {
+          text: payload,
+          width: 160,
+          height: 160,
+          colorDark: '#1D2E5B',
+          colorLight: '#FFFFFF',
+          correctLevel: QRCode.CorrectLevel.M
+        });
 
-  const url = 'https://script.google.com/macros/s/AKfycbz2OMriGa7Eklt5FyQkWCeK8PpxiNAgFVp2IwJf_UBVZBjQYffJ9Fiv8CO64VUSeuBR/exec';
+        setTimeout(() => {
+          const img = el.querySelector('img') || el.querySelector('canvas');
+          if (!img) return;
 
-fetch(url, {
-  method: 'POST',
-  mode: 'no-cors',
-  headers: {
-    'Content-Type': 'text/plain;charset=utf-8'
-  },
-  body: JSON.stringify(passData)
-})
-.then(response => {
-  console.log('Booking submitted');
-})
-.catch(error => {
-  console.error('Sheet logging failed:', error);
-});
-}
+          if (img.tagName === 'IMG') {
+            const i = new Image();
+            i.onload = () => ctx.drawImage(i, 2, 2, 160, 160);
+            i.src = img.src;
+          } else {
+            ctx.drawImage(img, 2, 2, 160, 160);
+          }
+        }, 120);
+      } catch(e) {
+        console.error('QR error:', e);
+      }
+    }
 
-function resetForm() {
-  if (qrInterval) clearInterval(qrInterval);
-  passData = null;
-  ['f-name','f-purpose','f-resident','f-date'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('err-msg').textContent = '';
-  document.getElementById('form-view').style.display = 'block';
-  document.getElementById('pass-view').style.display = 'none';
-}
-</script>
+    function startQR() {
+      if (qrInterval) clearInterval(qrInterval);
+
+      secsLeft = 30 - (Math.floor(Date.now() / 1000) % 30);
+      drawQR();
+
+      document.getElementById('qr-timer').textContent = 'Refreshes in ' + secsLeft + 's';
+
+      qrInterval = setInterval(() => {
+        secsLeft--;
+
+        if (secsLeft <= 0) {
+          secsLeft = 30;
+          drawQR();
+        }
+
+        document.getElementById('qr-timer').textContent = 'Refreshes in ' + secsLeft + 's';
+      }, 1000);
+    }
+
+    function sendToSheet() {
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify(passData)
+      })
+      .then(() => {
+        console.log('Booking submitted');
+      })
+      .catch(error => {
+        console.error('Sheet logging failed:', error);
+      });
+    }
+
+    function generatePass() {
+      const name = document.getElementById('f-name').value.trim();
+      const site = document.getElementById('f-site').value.trim();
+      const purpose = document.getElementById('f-purpose').value.trim();
+      const resident = document.getElementById('f-resident').value.trim();
+      const date = document.getElementById('f-date').value;
+      const err = document.getElementById('err-msg');
+
+      if (!name || !site || !purpose || !resident || !date) {
+        err.textContent = 'Please fill in all fields before generating a pass.';
+        return;
+      }
+
+      err.textContent = '';
+
+      passData = {
+        id: uid(),
+        name: name,
+        site: site,
+        purpose: purpose,
+        resident: resident,
+        date: date,
+        time: new Date().toLocaleTimeString('en-PH', {
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      };
+
+      document.getElementById('p-name').textContent = passData.name;
+      document.getElementById('p-id').textContent = 'PASS ID: ' + passData.id;
+      document.getElementById('p-site').textContent = passData.site;
+      document.getElementById('p-purpose').textContent = passData.purpose;
+      document.getElementById('p-resident').textContent = passData.resident;
+      document.getElementById('p-date').textContent = fmtDate(passData.date);
+      document.getElementById('p-time').textContent = passData.time;
+
+      sendToSheet();
+
+      document.getElementById('form-view').style.display = 'none';
+      document.getElementById('pass-view').style.display = 'block';
+
+      setTimeout(startQR, 200);
+    }
+
+    function resetForm() {
+      if (qrInterval) clearInterval(qrInterval);
+
+      passData = null;
+
+      ['f-name','f-site','f-purpose','f-resident','f-date'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+
+      document.getElementById('err-msg').textContent = '';
+      document.getElementById('form-view').style.display = 'block';
+      document.getElementById('pass-view').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
